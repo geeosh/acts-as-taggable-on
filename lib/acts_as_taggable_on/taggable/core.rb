@@ -265,13 +265,14 @@ module ActsAsTaggableOn::Taggable
     end
 
     def add_tag_with_value(tag, context, value)
+      context_s = context.to_s.singularize
       @tag_values ||= {}
-      @tag_values["#{tag}_#{context}"] = value
-      set_tag_list_on(context.to_s, tag_list_cache_on(context) + ",#{tag}")
+      @tag_values["#{tag}_#{context_s}"] = value
+      set_tag_list_on(context_s, tag_list_cache_on(context_s) + ",#{tag}")
     end
 
     def tag_value(tag, context)
-      @tag_values["#{tag}_#{context}"]
+      @tag_values["#{tag}_#{context.to_s.singularize}"]
     end
 
     def cached_tag_list_on(context)
