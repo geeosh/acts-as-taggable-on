@@ -267,8 +267,8 @@ module ActsAsTaggableOn::Taggable
     def add_tag_with_value(tag, context, value)
       context_s = context.to_s.singularize
       @tag_values ||= {}
-      @tag_values["#{tag}_#{context_s}"] = value
-      set_tag_list_on(context_s, tag_list_cache_on(context_s) + ",#{tag}")
+      @tag_values["#{tag}_#{context_s}"] = value.to_i
+      set_tag_list_on(context_s, tag_list_cache_on(context_s).add(tag))
     end
 
     def tag_value(tag, context)
@@ -422,7 +422,7 @@ module ActsAsTaggableOn::Taggable
 
         # Create new taggings:
         new_tags.each do |tag|
-          taggings.create!(tag_id: tag.id, context: context.to_s, taggable: self, value: tag_value(tag, context))
+          taggings.create!(tag_id: tag.id, context: context.to_s, taggable: self, value: tag_value(tag.name, context))
         end
       end
 
