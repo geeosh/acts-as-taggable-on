@@ -264,6 +264,16 @@ module ActsAsTaggableOn::Taggable
       custom_contexts << value.to_s unless custom_contexts.include?(value.to_s) or self.class.tag_types.map(&:to_s).include?(value.to_s)
     end
 
+    def add_tag_with_value(tag, context, value)
+      @tag_values ||= {}
+      @tag_values["#{tag}_#{context}"] = value
+      set_tag_list_on(context.to_s, tag_list_cache_on(context) + ",#{tag}")
+    end
+
+    def tag_value(tag, context)
+      @tag_values["#{tag}_#{context}"]
+    end
+
     def cached_tag_list_on(context)
       self["cached_#{context.to_s.singularize}_list"]
     end
@@ -411,7 +421,7 @@ module ActsAsTaggableOn::Taggable
 
         # Create new taggings:
         new_tags.each do |tag|
-          taggings.create!(tag_id: tag.id, context: context.to_s, taggable: self)
+          taggings.create!(tag_id: tag.id, context: context.to_s, taggable: self, value: tag_value(tag, context))
         end
       end
 
