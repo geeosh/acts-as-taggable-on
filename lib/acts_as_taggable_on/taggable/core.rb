@@ -268,11 +268,13 @@ module ActsAsTaggableOn::Taggable
       context_s = context.to_s.singularize
       @tag_values ||= {}
       @tag_values["#{tag}_#{context_s}"] = value.to_i
+      # This is what I think is duplicating tags to add:
       set_tag_list_on(context_s, tag_list_cache_on(context_s).add(tag))
     end
 
     def tag_value(tag, context)
-      @tag_values["#{tag}_#{context.to_s.singularize}"]
+      variable_name = 'tag_values'
+      instance_variable_defined?(variable_name) && instance_variable_get(variable_name)["#{tag}_#{context.to_s.singularize}"]
     end
 
     def cached_tag_list_on(context)
